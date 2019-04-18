@@ -29,15 +29,20 @@ public class UIManager : MonoBehaviour
     public Button ResourceObserveButton;
     public Button SwapLineButton;
     public Button FightButtion;
-    
+
+    public Button LeftLineSwapButton;
+    public Button MiddleLineSwapButton;
+    public Button RightLineSwapButton;
+
     GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-       ToggleEnemyLineInfoText(false);
+        ToggleEnemyLineInfoText(false);
         ToggleEnemyResourceInfoText(false);
+        ToggleLineSwapButton(false);
         
     }
 
@@ -69,11 +74,17 @@ public class UIManager : MonoBehaviour
         ResourceText_Enemy.gameObject.SetActive(IsOn);
     }
 
+    public void ToggleLineSwapButton(bool IsOn)
+    {
+        LeftLineSwapButton.gameObject.SetActive(IsOn);
+        MiddleLineSwapButton.gameObject.SetActive(IsOn);
+        RightLineSwapButton.gameObject.SetActive(IsOn);
+    }
+
     public void OnFightButtonPress()
     {
         if (!gameManager.IsFightOn)
         {
-            //FightButtion.gameObject.SetActive(false);
            StartCoroutine( gameManager.FightCalc());
         }
     }
@@ -118,22 +129,35 @@ public class UIManager : MonoBehaviour
 
     }
 
-
-
     public void SwapLine()
     {
+        if (gameManager.Resource_Player >= 10)
+        {
+            gameManager.Resource_Player -= 10;
+            ToggleLineSwapButton(true);
+        }
+    }
 
+    public void OnSwapButtonPressed(string line)
+    {
+        if(gameManager.LineSwap(line))
+            ToggleLineSwapButton(false);
     }
 
     void TimeCalc()
     {
         remainTime -= Time.deltaTime;
-        int sec = Mathf.FloorToInt(remainTime % 60);
-
-        if (sec < 10)
-            TimeText.text = "남은 시간 : " + Mathf.FloorToInt(remainTime / 60) + ":0" + sec;
+        if (remainTime < 0)
+            gameManager.FindWinner(true);
         else
-            TimeText.text = "남은 시간 : " + Mathf.FloorToInt(remainTime / 60) + ":" + sec;
+        {
+            int sec = Mathf.FloorToInt(remainTime % 60);
+
+            if (sec < 10)
+                TimeText.text = "남은 시간 : " + Mathf.FloorToInt(remainTime / 60) + ":0" + sec;
+            else
+                TimeText.text = "남은 시간 : " + Mathf.FloorToInt(remainTime / 60) + ":" + sec;
+        }
     }
 
     

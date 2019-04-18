@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public int Health_Enemy = 100;
 
     float timer = 0.0f;
+    string Line_1 = null, Line_2 = null;
 
     Dictionary<string, int> LineCount = new Dictionary<string, int>();
 
@@ -35,8 +36,13 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        IncreaseResource();
+    }
+
+    void IncreaseResource()
+    {
         timer += Time.deltaTime;
-        if(timer > 1.0f)
+        if (timer > 1.0f)
         {
             Resource_Player++;
             Resource_Enemy++;
@@ -89,10 +95,7 @@ public class GameManager : MonoBehaviour
         uiManager.HealthOnText();
 
         //양 플레이어의 승리 조건 확인
-        if (Health_Player <= 0)
-            uiManager.ShowWinner("Enemy");
-        else if (Health_Enemy <= 0)
-            uiManager.ShowWinner("Player");
+        FindWinner(false);
 
         uiManager.ToggleEnemyLineInfoText(false);
         IsFightOn = false;
@@ -204,6 +207,49 @@ public class GameManager : MonoBehaviour
     {
         uiManager.ToggleEnemyResourceInfoText(true);
         yield return new WaitForSeconds(5f);
+    }
+
+    public bool LineSwap(string line)
+    {
+        /* 처음으로 공격로를 선택하면 그 공격로를 Line_1에 등록하고 false를 리턴.
+         * 두번째 공격로를 선택하면 xor swap을 진행하고 Line_1, Line_2를 null로 되돌린 다음
+         * true를 리턴.
+         */
+        if (Line_1 == null)
+        {
+            Line_1 = line;
+            return false;
+        }
+        else
+        {
+            Line_2 = line;
+            LineCount[Line_1] = LineCount[Line_1] ^ LineCount[Line_2];
+            LineCount[Line_2] = LineCount[Line_2] ^ LineCount[Line_1];
+            LineCount[Line_1] = LineCount[Line_1] ^ LineCount[Line_2];
+            Line_1 = Line_2 = null;
+            uiManager.LineCountOnText(LineCount);
+            return true;
+        }
+    }
+
+    public void FindWinner(bool IsTimeOut)
+    {
+        if (IsTimeOut)
+        {
+            if (Health_Player > Health_Enemy)
+                uiManager.ShowWinner("Player");
+            else if (Health_Enemy > Health_Player)
+                uiManager.ShowWinner("Enemy");
+            else
+                uiManager.ShowWinner("Player & Enemy");
+        }
+        else
+        {
+            if (Health_Player <= 0)
+                uiManager.ShowWinner("Enemy");
+            else if (Health_Enemy <= 0)
+                uiManager.ShowWinner("Player");
+        }
 
     }
 }
