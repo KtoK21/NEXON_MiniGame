@@ -36,6 +36,7 @@ public class UIManager : MonoBehaviour
 
     public Button Debug_IncreaseResourceby10;
     public Button Debug_ToggleEnemyLineText;
+    public Button ExitButton;
     GameManager gameManager;
 
     // Start is called before the first frame update
@@ -51,6 +52,9 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+
         TimeCalc();
         ResourceOnText();
         HealthOnText();
@@ -155,6 +159,11 @@ public class UIManager : MonoBehaviour
     public void OnDebug_ShowENemyLinePressd()
     {
         ToggleEnemyLineInfoText(true);
+    }
+
+    public void OnExitButtonPressed()
+    {
+        Application.Quit();
     }
 
     void TimeCalc()
