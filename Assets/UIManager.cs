@@ -34,6 +34,8 @@ public class UIManager : MonoBehaviour
     public Button MiddleLineSwapButton;
     public Button RightLineSwapButton;
 
+    public Button Debug_IncreaseResourceby10;
+    public Button Debug_ToggleEnemyLineText;
     GameManager gameManager;
 
     // Start is called before the first frame update
@@ -131,6 +133,7 @@ public class UIManager : MonoBehaviour
 
     public void SwapLine()
     {
+        //고치고싶다...
         if (gameManager.Resource_Player >= 10)
         {
             gameManager.Resource_Player -= 10;
@@ -144,9 +147,20 @@ public class UIManager : MonoBehaviour
             ToggleLineSwapButton(false);
     }
 
+    public void OnDebug_IncreaseResourceButtonPressed(int amount)
+    {
+        gameManager.IncreaseResource(amount);
+    }
+
+    public void OnDebug_ShowENemyLinePressd()
+    {
+        ToggleEnemyLineInfoText(true);
+    }
+
     void TimeCalc()
     {
         remainTime -= Time.deltaTime;
+        //제한시간이 0이면 승자를 찾아서 표시.
         if (remainTime < 0)
             gameManager.FindWinner(true);
         else
