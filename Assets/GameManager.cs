@@ -261,6 +261,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Line_2 = line;
+            //XOR swap
             LineCount[Line_1] = LineCount[Line_1] ^ LineCount[Line_2];
             LineCount[Line_2] = LineCount[Line_2] ^ LineCount[Line_1];
             LineCount[Line_1] = LineCount[Line_1] ^ LineCount[Line_2];
